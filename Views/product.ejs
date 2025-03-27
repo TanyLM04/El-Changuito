@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Changuito - Home</title>
+    <title><%= product.name %> - El Changuito</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="header-content">
-            <h1>El Changuito</h1>
+            <h1>Changuito</h1>
             <nav>
                 <a href="/">Home</a>
                 <a href="/products">Products</a>
@@ -19,7 +19,7 @@
                 <% } %>
             </nav>
             <div class="profile-container">
-                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>" id="profileButton">
+                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>">
                     <i class="fas fa-user-circle"></i>
                 </div>
                 <div class="dropdown-menu" id="dropdownMenu">
@@ -32,39 +32,52 @@
             </div>
         </div>
     </header>
-    
-    <main>
-        <section class="welcome-section">
-            <h1>Welcome to El Changuito</h1>
-            <p>El Changuito is a company dedicated to selling quality fantasy and science fiction items.</p>
-        </section>
-        
-        <section class="quote-section">
-            <div class="quote-image">
-                <img src="https://i.f1g.fr/media/ext/299x250/image1.evene.fr/files/celebrity/242.jpg" alt="Quote Image">
+
+    <main class="product-details">
+        <div class="product-details-content">
+            <div class="product-image">
+                <img src="<%= product.image %>" alt="<%= product.name %>">
             </div>
-            <div class="quote">
-                <blockquote>
-                    "If you want something done right, do it yourself." - Charles-Guillaume Étienne
-                </blockquote>
+            <div class="product-info">
+                <h1><%= product.name %></h1>
+                <p class="price"><%= product.getFormattedPrice() %></p>
+                <div class="description">
+                    <h2>Description</h2>
+                    <p><%= product.description %></p>
+                </div>
+                <div class="product-actions">
+                    <form action="/pay" method="POST" class="buy-form">
+                        <input type="hidden" name="productId" value="<%= product._id %>">
+                        <input type="hidden" name="price" value="<%= product.price %>">
+                        <button type="submit" class="buy-button">Buy Now</button>
+                    </form>
+                    <% if (devMode) { %>
+                        <div class="admin-actions">
+                            <a href="/edit-product/<%= product._id %>" class="edit-button">Edit</a>
+                            <form action="/delete-product/<%= product._id %>" method="POST" class="delete-form">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                    <% } %>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <script> //dropdown menu
         document.addEventListener('DOMContentLoaded', function() {
-            const profileButton = document.getElementById('profileButton');
+            const profileCircle = document.querySelector('.profile-circle');
             const dropdownMenu = document.getElementById('dropdownMenu');
             let isDropdownOpen = false;
 
-            profileButton.addEventListener('click', function(e) {
+            profileCircle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 isDropdownOpen = !isDropdownOpen;
                 dropdownMenu.style.display = isDropdownOpen ? 'block' : 'none';
             });
 
             document.addEventListener('click', function(e) {
-                if (!profileButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (!profileCircle.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     isDropdownOpen = false;
                     dropdownMenu.style.display = 'none';
                 }
@@ -72,4 +85,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

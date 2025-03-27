@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Changuito - Order History</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>El Changuito</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/products">Products</a>
+                <% if (devMode) { %>
+                    <a href="/add-product">Add Product</a>
+                <% } %>
+            </nav>
+            <div class="profile-container">
+                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>" id="profileButton">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="/orders"><i class="fas fa-history"></i> Order History</a>
+                    <a href="/settings"><i class="fas fa-cog"></i> Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/coming-soon" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <h1>Order History</h1>
+        
+        <div class="orders-list">
+            <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+                <% orders.forEach(order => { %>
+                    <div class="order-card">
+                        <div class="order-header">
+                            <h2>Order #<%= order._id %></h2>
+                            <span class="order-date"><%= order.createdAt.toLocaleDateString() %></span>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="product-info">
+                                <% if (order.product) { %>
+                                    <h3><%= order.product.name %></h3>
+                                    <% if (order.product.image) { %>
+                                        <img src="<%= order.product.image %>" alt="<%= order.product.name %>" class="order-product-image">
+                                    <% } %>
+                                <% } else { %>
+                                    <h3>Product No Longer Available</h3>
+                                    <p>This product has been removed from our catalog.</p>
+                                <% } %>
+                            </div>
+                            
+                            <div class="order-info">
+                                <p class="order-amount">Amount: <%= order.getFormattedAmount() %></p>
+                                <p class="order-date">Date: <%= new Date(order.createdAt).toLocaleDateString() %></p>
+                                <span class="status-badge <%= order.status %>"><%= order.status %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="no-orders">No orders found</p>
+            <% } %>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileButton = document.getElementById('profileButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            profileButton.addEventListener('click', function() {
+                dropdownMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

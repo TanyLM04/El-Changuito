@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Changuito - Home</title>
+    <title>El Changuito - Add Product</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -34,20 +34,30 @@
     </header>
     
     <main>
-        <section class="welcome-section">
-            <h1>Welcome to El Changuito</h1>
-            <p>El Changuito is a company dedicated to selling quality fantasy and science fiction items.</p>
-        </section>
-        
-        <section class="quote-section">
-            <div class="quote-image">
-                <img src="https://i.f1g.fr/media/ext/299x250/image1.evene.fr/files/celebrity/242.jpg" alt="Quote Image">
-            </div>
-            <div class="quote">
-                <blockquote>
-                    "If you want something done right, do it yourself." - Charles-Guillaume Étienne
-                </blockquote>
-            </div>
+        <section class="add-product-section">
+            <h2>Add New Product</h2>
+            <form action="/add-product" method="post" class="add-product-form">
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image URL:</label>
+                    <input type="url" id="image" name="image" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Add Product</button>
+                    <a href="/products" class="cancel-button">Cancel</a>
+                </div>
+            </form>
         </section>
     </main>
 
@@ -72,4 +82,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Changuito - Products</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>El Changuito</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/products">Products</a>
+                <% if (devMode) { %>
+                    <a href="/add-product">Add Product</a>
+                <% } %>
+            </nav>
+            <div class="profile-container">
+                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>" id="profileButton">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="/orders"><i class="fas fa-history"></i> Order History</a>
+                    <a href="/settings"><i class="fas fa-cog"></i> Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/coming-soon" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <h1>Our Products</h1>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search products..." class="search-input">
+        </div>
+        
+        <div id="products" class="products-grid">
+            <% if (typeof products !== 'undefined' && products.length > 0) { %>
+                <% products.forEach(product => { %>
+                    <div class="product" data-name="<%= product.name.toLowerCase() %>" data-description="<%= product.description.toLowerCase() %>">
+                        <h2><%= product.name %></h2>
+                        <p><%= product.description %></p>
+                        <p class="price"><%= product.getFormattedPrice() %></p>
+                        <% if (product.image) { %>
+                            <img src="<%= product.image %>" alt="<%= product.name %>">
+                        <% } %>
+                        <div class="product-actions">
+                            <form action="/pay" method="POST" class="buy-form">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+                                <input type="hidden" name="price" value="<%= product.price %>">
+                                <button type="submit" class="buy-button">Buy Now</button>
+                            </form>
+                            <% if (devMode) { %>
+                                <div class="admin-actions">
+                                    <a href="/edit-product/<%= product._id %>" class="edit-button">Edit</a>
+                                    <form action="/delete-product/<%= product._id %>" method="POST" class="delete-form">
+                                        <button type="submit" class="delete-button">Delete</button>
+                                    </form>
+                                </div>
+                            <% } %>
+                            <form action="/product/<%= product._id %>" method="GET" class="details-form">
+                                <button type="submit" class="details-button">View Details</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="no-products">No products available</p>
+            <% } %>
+        </div>
+    </main>
+
+    <script> //dropdown menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileButton = document.getElementById('profileButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            let isDropdownOpen = false;
+
+            profileButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isDropdownOpen = !isDropdownOpen;
+                dropdownMenu.style.display = isDropdownOpen ? 'block' : 'none';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!profileButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    isDropdownOpen = false;
+                    dropdownMenu.style.display = 'none';
+                }
+            });
+
+            const searchInput = document.getElementById('searchInput');
+            const products = document.querySelectorAll('.product');
+            const productsGrid = document.getElementById('products');
+            const noProductsMessage = document.querySelector('.no-products');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleProducts = 0;
+
+                products.forEach(product => {
+                    const productName = product.dataset.name;
+                    const productDescription = product.dataset.description;
+                    
+                    if (productName.includes(searchTerm) || productDescription.includes(searchTerm)) {
+                        product.style.display = 'flex';
+                        visibleProducts++;
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+
+                if (noProductsMessage) {
+                    if (visibleProducts === 0) {
+                        noProductsMessage.style.display = 'block';
+                    } else {
+                        noProductsMessage.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

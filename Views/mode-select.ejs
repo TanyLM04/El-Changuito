@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Changuito - Home</title>
+    <title>El Changuito - Mode Selection</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -19,7 +19,7 @@
                 <% } %>
             </nav>
             <div class="profile-container">
-                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>" id="profileButton">
+                <div class="profile-circle <%= devMode ? 'dev-mode' : '' %>">
                     <i class="fas fa-user-circle"></i>
                 </div>
                 <div class="dropdown-menu" id="dropdownMenu">
@@ -33,38 +33,47 @@
         </div>
     </header>
     
-    <main>
-        <section class="welcome-section">
-            <h1>Welcome to El Changuito</h1>
-            <p>El Changuito is a company dedicated to selling quality fantasy and science fiction items.</p>
-        </section>
-        
-        <section class="quote-section">
-            <div class="quote-image">
-                <img src="https://i.f1g.fr/media/ext/299x250/image1.evene.fr/files/celebrity/242.jpg" alt="Quote Image">
+    <main class="mode-select">
+        <div class="mode-select-content">
+            <h1>Select Your Mode</h1>
+            <div class="mode-cards">
+                <form action="/set-mode" method="POST" class="mode-card user-mode">
+                    <input type="hidden" name="mode" value="user">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>User Mode</h2>
+                    <p>Browse and purchase products</p>
+                    <button type="submit" class="mode-button">Enter User Mode</button>
+                </form>
+                <form action="/set-mode" method="POST" class="mode-card dev-mode">
+                    <input type="hidden" name="mode" value="dev">
+                    <i class="fas fa-code"></i>
+                    <h2>Developer Mode</h2>
+                    <p>Manage products and view analytics</p>
+                    <button type="submit" class="mode-button">Enter Dev Mode</button>
+                </form>
             </div>
-            <div class="quote">
-                <blockquote>
-                    "If you want something done right, do it yourself." - Charles-Guillaume Étienne
-                </blockquote>
-            </div>
-        </section>
+            <% if (devMode) { %>
+                <p class="current-mode">Currently in Developer Mode</p>
+            <% } else { %>
+                <p class="current-mode">Currently in User Mode</p>
+            <% } %>
+        </div>
     </main>
 
-    <script> //dropdown menu
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const profileButton = document.getElementById('profileButton');
+            const profileCircle = document.querySelector('.profile-circle');
             const dropdownMenu = document.getElementById('dropdownMenu');
             let isDropdownOpen = false;
 
-            profileButton.addEventListener('click', function(e) {
+            profileCircle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 isDropdownOpen = !isDropdownOpen;
                 dropdownMenu.style.display = isDropdownOpen ? 'block' : 'none';
             });
 
             document.addEventListener('click', function(e) {
-                if (!profileButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (!profileCircle.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     isDropdownOpen = false;
                     dropdownMenu.style.display = 'none';
                 }
@@ -72,4 +81,4 @@
         });
     </script>
 </body>
-</html>
+</html> 
